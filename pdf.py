@@ -1,5 +1,5 @@
 from pypdf  import PdfReader, PdfWriter
-from os     import system, path, listdir
+from os     import system, path, listdir, stat
 from sys    import argv
 import readline
 
@@ -243,6 +243,9 @@ if __name__ == '__main__':
         if INPUTFILE == 'input.pdf':
             print(red + '\nDo you forget to set the input file?\nUse "python3 ' + argv[0] + ' <filename.pdf>" instead' + reset, end='')
         print()
+        exit()
+    elif path.getsize(INPUTFILE) == 0:
+        print(red + '[ERROR]: input file ' + INPUTFILE + ' is empty' + reset)
         exit()
 
 
