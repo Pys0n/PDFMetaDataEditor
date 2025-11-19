@@ -62,4 +62,9 @@ Filename..........my_file.pdf
 
 Metadata Key  : Creat
 ```
-"Creat" is not unique, because there are "**Creat**ionDate" and "**Creat**or", but "Creato" and "Creati" are unique. So if you want to change the creatin date you only need to write "Creati" instead of "/CreationDate".
+"Creat" is not unique, because there are "**Creat**ionDate" and "**Creat**or", but "Creato" and "Creati" are unique. So if you want to change the creator you only need to write "Creato" instead of "/Creator". (This is very useful if the key is very long, but unique after a few letters)
+
+
+### Restrictions
+
+- You cannot change the `/CreationDate` and the `/ModDate`.
