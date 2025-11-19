@@ -5,9 +5,6 @@ import readline
 
 from config import *
 
-# set filenames
-INPUTFILE = 'input.pdf'
-
 # set colors
 red = '\033[38;2;225;0;0m'
 green = '\033[38;2;0;220;0m'
@@ -101,15 +98,15 @@ def main() -> None:
                 print(blue + '[INFO]: changes don\'t saved' + reset)
                 exit()
             else:
+                system('clear')
                 if CREATE_BACKUPFILE:
-                    writer.add_metadata(reader.metadata.copy())
-
-                    # save metadata
-                    with open(INPUTFILE+'.original', "wb") as out_file:
-                        writer.write(out_file)
+                    print(blue + '[INFO]: Making backup...' + reset)
                     
-                    system('clear')
+                    system('cp "' + INPUTFILE + '" "' + INPUTFILE+'.original"')
+                    
                     print(blue + '[INFO]: backup saved successfully' + reset)
+
+                print(blue + '[INFO]: Saving file...' + reset)
 
                 writer.add_metadata(new_metadata)
 
@@ -227,8 +224,10 @@ def main() -> None:
 if __name__ == '__main__':
     inputfile = ''
     # chack if there are extra arguments
-    if len(argv) >= 2:
-        inputfile = argv[1]
+    if len(argv) < 2:
+        print(red + '[ERROR]: You forget to set the input file!\n[ERROR]: Use "python3 ' + argv[0] + ' <filename.pdf>" instead!' + reset)
+        exit()
+    inputfile = argv[1]
 
     # check if first extra argument is a inputfile
     if inputfile != '':
@@ -237,14 +236,8 @@ if __name__ == '__main__':
             exit()
         else:
             INPUTFILE = inputfile
-
-    if not path.exists(INPUTFILE):
-        print(red + '[ERROR]: input file ' + INPUTFILE + ' does not exist' + reset, end='')
-        if INPUTFILE == 'input.pdf':
-            print(red + '\nDo you forget to set the input file?\nUse "python3 ' + argv[0] + ' <filename.pdf>" instead' + reset, end='')
-        print()
-        exit()
-    elif path.getsize(INPUTFILE) == 0:
+ 
+    if path.getsize(INPUTFILE) == 0:
         print(red + '[ERROR]: input file ' + INPUTFILE + ' is empty' + reset)
         exit()
 
