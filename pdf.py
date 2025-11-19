@@ -136,29 +136,13 @@ def main() -> None:
                 if key[0] != '/':
                     key = '/' + key
 
-                count = 0
-                for metakey in new_metadata:
-                    if metakey.startswith(key) and new_metadata[metakey][1] != '[deleted]':
-                        new_key = metakey
-                        count += 1
-                if count > 1:
+                value = input('Metadata Value: ')
+                if len(value.strip()) == 0:
                     system('clear')
-                    input(red + '[ERROR]: cannot identify key; key is not unique' + reset)
-                elif count == 1:
-                    if key != new_key:
-                        print(blue + '[INFO]: Successfully identified metadata key: ' + new_key + reset)
-                    key = new_key
-
-                    value = input('Metadata Value: ')
-                    if len(value.strip()) == 0:
-                        system('clear')
-                        input(red + '[ERROR]: You need to enter a metadata value' + reset)
-                    else:
-                        # set metadata
-                        new_metadata[key] = [value, '[added]']
+                    input(red + '[ERROR]: You need to enter a metadata value' + reset)
                 else:
-                    system('clear')
-                    input(red + '[ERROR]: No key named '+ key + reset)
+                    # set metadata
+                    new_metadata[key] = [value, '[added]']
 
         elif key == 'e':
             print_metadata(new_metadata)
