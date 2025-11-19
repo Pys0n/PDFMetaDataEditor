@@ -15,13 +15,6 @@ blue = '\033[38;2;150;150;255m'
 grey = '\033[38;2;150;150;150m'
 reset = '\033[0m'
 
-# create reader and writer
-reader = PdfReader(INPUTFILE)
-writer = PdfWriter()
-
-# get metadata
-writer.append_pages_from_reader(reader)
-
 def print_metadata(new_metadata) -> None:
     global red, green, blue, grey, reset
     # get longest key length
@@ -70,16 +63,6 @@ def main() -> None:
 
     new_metadata = reader.metadata.copy()
 
-    if CREATE_BACKUPFILE:
-        writer.add_metadata(new_metadata)
-
-        # save metadata
-        with open(INPUTFILE+'.original', "wb") as out_file:
-            writer.write(out_file)
-        
-        system('clear')
-        input(blue + '[INFO]: file saved successfully' + reset)
-
     for key in new_metadata:
         new_metadata[key] = [new_metadata[key], '']
 
@@ -118,6 +101,16 @@ def main() -> None:
                 print(blue + '[INFO]: changes don\'t saved' + reset)
                 exit()
             else:
+                if CREATE_BACKUPFILE:
+                    writer.add_metadata(reader.metadata.copy())
+
+                    # save metadata
+                    with open(INPUTFILE+'.original', "wb") as out_file:
+                        writer.write(out_file)
+                    
+                    system('clear')
+                    print(blue + '[INFO]: backup saved successfully' + reset)
+
                 writer.add_metadata(new_metadata)
 
                 # save metadata
@@ -163,9 +156,6 @@ def main() -> None:
                     else:
                         # set metadata
                         new_metadata[key] = [value, '[added]']
-                    
-                        system('clear')
-                        input(blue + '[INFO]: Metadata changed successfully' + reset)
                 else:
                     system('clear')
                     input(red + '[ERROR]: No key named '+ key + reset)
@@ -207,9 +197,6 @@ def main() -> None:
                         # set metadata
                         new_metadata[key][0] = value
                         new_metadata[key][1] = '[edited]'
-                    
-                        system('clear')
-                        input(blue + '[INFO]: Metadata changed successfully' + reset)
                 else:
                     system('clear')
                     input(red + '[ERROR]: No key named '+key + reset)
@@ -248,9 +235,6 @@ def main() -> None:
                 else:
                     # set metadata
                     new_metadata[key][1] = '[deleted]'
-
-                    system('clear')
-                    input(blue + '[INFO]: Metadata changed successfully' + reset)
             else:
                 system('clear')
                 input(red + '[ERROR]: No key named '+ key + reset)
@@ -265,17 +249,25 @@ if __name__ == '__main__':
     # check if first extra argument is a inputfile
     if inputfile != '':
         if not inputfile.endswith('.pdf'):
-            input(red + '[ERROR]: Inputfile ' + inputfile + ' does not exist' + reset)
-        elif not path.exists(inputfile):
-            input(red + '[ERROR]: Inputfile needs to be a pdf' + reset)
+            print(red + '[ERROR]: input file needs to be a pdf' + reset)
+            exit()
         else:
             INPUTFILE = inputfile
-            # create reader and writer
-            reader = PdfReader(INPUTFILE)
-            writer = PdfWriter()
 
-            # get writer
-            writer.append_pages_from_reader(reader)
+    if not path.exists(INPUTFILE):
+        print(red + '[ERROR]: input file ' + INPUTFILE + ' does not exist' + reset, end='')
+        if INPUTFILE == 'input.pdf':
+            print(red + '\nDo you forget to set the input file?\nUse "python3 ' + argv[0] + ' <filename.pdf>" instead' + reset, end='')
+        print()
+        exit()
+
+
+    # create reader and writer
+    reader = PdfReader(INPUTFILE)
+    writer = PdfWriter()
+
+    # get writer
+    writer.append_pages_from_reader(reader)
 
     # start
     main()
